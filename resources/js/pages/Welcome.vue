@@ -12,14 +12,14 @@ const page = usePage();
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
     <div> 
-        <header class="bg-white w-full ">
+        <header class="bg-gradient-to-r from-blue-500 to-red-500 w-full ">
             <nav class="flex items-center justify-end gap-4 p-2">
                 <Link v-if="page.props?.auth?.user" :href="route('dashboard')"
                     class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
                 </Link>
                 <template v-else>
                     <Link :href="route('login')"
-                    class=" bg-black text-white solid-block square-m border border-[#28140035] px-5 py-1.5 leading-normal text-black hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b]">
+                    class=" bg-black text-white solid-block square-m border border-[#28140035] px-5 py-1.5 leading-normal hover:border-[#1915014a] dark:border-[#3E3E3A] dark:hover:border-[#62605b]">
                   Login</Link>
                 </template>
                 <Link :href="route('register')"
@@ -39,13 +39,12 @@ const page = usePage();
             </div>
                 <!-- Left Content -->
                 <div class="w-full md:w-1/2 text-center md:text-left">
-                    <h4 class="uppercase text-sm tracking-widest mb-2">Request Certification Form</h4>
                     <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Student Certificate Online Request
                         System</h1>
                 </div>
                 <!-- Right Image -->
-                <div class="w-full md:w-1/2 mb-20 md:mb-60">
-                    <img src="/images/uni.png" alt="Illustration" class="w-full max-w-md mx-auto rounded-full" />
+                <div class="md:w-1/2 mb-20 md:mb-100">
+                    <img src="/images/hero.png" alt="Illustration" class="w-full max-w-md mx-auto rounded-full" /> 
                 </div>
             </div>
 

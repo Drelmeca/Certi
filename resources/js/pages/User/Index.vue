@@ -62,6 +62,8 @@ const onEdit = (id) => {
                                 <span v-else class="text-red-600">Inactive</span>
                             </td>
                             <td class="px-6 py-4">
+                                <button
+                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400" @click="onEdit(user.id)">{{ user.role }}</button>
                                 <span v-if="user.role === 2" class="text-blue-600">Admin-user</span>
                                 <span v-else-if="user.role === 1" class="text-yellow-600">Guest</span>
                                 <span v-else class="text-gray-600">Guest</span>

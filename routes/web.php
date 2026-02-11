@@ -22,6 +22,8 @@ Route::group(['auth', 'verified'], function(){
     Route::get('/CertRequest/create',[\App\Http\Controllers\CertRequestController::class,'create'])->name('certrequest.create'); 
     Route::get('/CertRequest/edit/{id}',[\App\Http\Controllers\CertRequestController::class,'edit'])->name('certrequest.edit');
     Route::post('/CertRequest/store',[\App\Http\Controllers\CertRequestController::class,'store'])->name('certrequest.store');
+    Route::post('/CertRequest/{id}/approve',[\App\Http\Controllers\CertRequestController::class,'approve'])->name('certrequest.approve');
+    Route::post('/CertRequest/{id}/reject',[\App\Http\Controllers\CertRequestController::class,'reject'])->name('certrequest.reject');
 });
 
 

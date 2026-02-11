@@ -8,6 +8,7 @@ class CertRequest extends Model
     protected $table = 'request_certs';
     protected $primaryKey = 'id';
     protected $fillable = [
+        'user_id',
         'first_name',
         'middle_name',
         'last_name',
