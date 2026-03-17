@@ -21,7 +21,6 @@ const CertRequest = reactive({
     contact_number: '',
     request_type: '',
     request_purpose: '',
-    request_date: '',
     isValidateInformation: false,
     success: false,
 });
@@ -56,7 +55,6 @@ const createCertRequest = () => {
             CertRequest.contact_number = '';
             CertRequest.request_type = '';
             CertRequest.request_purpose = '';
-            CertRequest.request_date = '';
             
 
             router.visit('/CertRequest'); // Redirect to the index page after creation
@@ -79,7 +77,6 @@ onMounted(() => {
         CertRequest.contact_number = props.person.contact_number || '';
         CertRequest.request_type = props.person.request_type || '';
         CertRequest.request_purpose = props.person.request_purpose || '';
-        CertRequest.request_date = props.person.request_date ||'';
     }
 });
 
@@ -109,6 +106,7 @@ const handleFileUpload = (event: Event) => {
                 <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8">
                     <h2 class="text-2xl font-semibold text-gray-800  b-2">Request Form</h2>
                     <p class="text-gray-500 mb-6">Enter your details below for your request certificate. </p>
+                    <p class="text-blue-500 mb-8">Claims this within 3day's.</p>
 
                   
                         <div class="md:col-span-2 space-y-4">
@@ -154,10 +152,12 @@ const handleFileUpload = (event: Event) => {
                                     <label class="block text-sm font-medium text-gray-700">Request Type</label>
                                     <select v-model="CertRequest.request_type"
                                         class="mt-1 block w-full text-black  border border-gray-300 rounded-md shadow-sm px-3 py-2">
-                                        <option value="0">Certificate</option>
+                                        <option value="0w">Certificate</option>
                                         <option value="1">Goodmoral</option>
-                                        <option value="2">Clearance</option>
-                                        <option value="3">Other</option>
+                                        <option value="2">Form 137</option>
+                                        <option value="3">Clearance</option>
+                                        <option value="4">Other</option>
+                                       
                                     </select>
                                 </div>
                                 <div>
@@ -165,16 +165,6 @@ const handleFileUpload = (event: Event) => {
                                     <input type="text" v-model="CertRequest.request_purpose"
                                         class="mt-1 block w-full text-black  border border-gray-300 rounded-md shadow-sm px-3 py-2" />
                                 </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Request Date</label>
-                                    <input type="date" v-model="CertRequest.request_date"
-                                        class="mt-1 text-black  block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2" />
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700">Attachment</label>
-                                <input type="file" ref="fileInput" @change="handleFileUpload"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2" />
                             </div>
 
                             <div class="flex items-center space-x-2">

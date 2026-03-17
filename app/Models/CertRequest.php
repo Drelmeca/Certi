@@ -18,7 +18,6 @@ class CertRequest extends Model
         'request_type',
         'request_purpose',
         'status',
-        'attachment',
     ];
     public $timestamps = true;
 }

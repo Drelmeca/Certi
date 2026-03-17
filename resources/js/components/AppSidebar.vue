@@ -32,11 +32,6 @@ if (role === 'admin' || role === 2) {
                 href: '/CertRequest',
                 icon: LayoutGrid,
             } as NavItem,
-            {
-                title: 'App Settings',
-                href: '/app-settings',
-                icon: LayoutGrid,
-            } as NavItem,
         );
     } else {
         mainNavItems.push(

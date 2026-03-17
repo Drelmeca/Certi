@@ -30,7 +30,7 @@ const page = usePage();
                
  
         <!-- Hero Section -->
-        <section class="bg-gradient-to-t from-blue-500 via-red-400 to-orange-400 text-white">
+        <section class="bg-gradient-to-t from-green-500 via-blue-400 to-yellow-400 text-black">
             <div class="container mx-auto py-20 flex flex-col-reverse md:flex-row items-center justify-between">
                 <div class="flex items-center justify-between mt-4">
                 <div class="flex items-center">
@@ -44,9 +44,9 @@ const page = usePage();
                 </div>
                 <!-- Right Image -->
                 <div class="md:w-1/2 mb-20 md:mb-100">
-                    <img src="/images/hero.png" alt="Illustration" class="w-full max-w-md mx-auto rounded-full" /> 
+                    <img src="/images/viviana.jpg" alt="Illustration" class="w-full max-w-md mx-auto rounded-full" /> 
                 </div>
-            </div>
+            </div>  
 
         <!-- Info Section -->
         <section class="py-13 px-6 text-center">
