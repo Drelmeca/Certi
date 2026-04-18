@@ -4,11 +4,11 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-vue-next';
 import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbItems: BreadcrumbItem[] = [
@@ -26,10 +26,6 @@ const form = useForm({
     password: '',
     password_confirmation: '',
 });
-
-const currentShowPassword = ref(false);
-const newShowPassword = ref(false);
-const confirmShowPassword = ref(false);
 
 const updatePassword = () => {
     form.put(route('password.update'), {
@@ -65,63 +61,42 @@ const updatePassword = () => {
                 <form @submit.prevent="updatePassword" class="space-y-6">
                     <div class="grid gap-2">
                         <Label for="current_password">Current password</Label>
-                        <div class="relative">
-                            <Input
-                                id="current_password"
-                                ref="currentPasswordInput"
-                                v-model="form.current_password"
-                                :type="currentShowPassword ? 'text' : 'password'"
-                                class="pr-10"
-                                autocomplete="current-password"
-                                placeholder="Current password"
-                            />
-                            <Button type="button" variant="ghost" size="sm" class="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
-                                @click="currentShowPassword = !currentShowPassword">
-                                <Eye v-if="!currentShowPassword" class="h-4 w-4" />
-                                <EyeOff v-else class="h-4 w-4" />
-                            </Button>
-                        </div>
+                        <Input
+                            id="current_password"
+                            ref="currentPasswordInput"
+                            v-model="form.current_password"
+                            type="password"
+                            class="mt-1 block w-full"
+                            autocomplete="current-password"
+                            placeholder="Current password"
+                        />
                         <InputError :message="form.errors.current_password" />
                     </div>
 
                     <div class="grid gap-2">
                         <Label for="password">New password</Label>
-                        <div class="relative">
-                            <Input
-                                id="password"
-                                ref="passwordInput"
-                                v-model="form.password"
-                                :type="newShowPassword ? 'text' : 'password'"
-                                class="pr-10"
-                                autocomplete="new-password"
-                                placeholder="New password"
-                            />
-                            <Button type="button" variant="ghost" size="sm" class="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
-                                @click="newShowPassword = !newShowPassword">
-                                <Eye v-if="!newShowPassword" class="h-4 w-4" />
-                                <EyeOff v-else class="h-4 w-4" />
-                            </Button>
-                        </div>
+                        <Input
+                            id="password"
+                            ref="passwordInput"
+                            v-model="form.password"
+                            type="password"
+                            class="mt-1 block w-full"
+                            autocomplete="new-password"
+                            placeholder="New password"
+                        />
                         <InputError :message="form.errors.password" />
                     </div>
 
                     <div class="grid gap-2">
                         <Label for="password_confirmation">Confirm password</Label>
-                        <div class="relative">
-                            <Input
-                                id="password_confirmation"
-                                v-model="form.password_confirmation"
-                                :type="confirmShowPassword ? 'text' : 'password'"
-                                class="pr-10"
-                                autocomplete="new-password"
-                                placeholder="Confirm password"
-                            />
-                            <Button type="button" variant="ghost" size="sm" class="absolute right-2 top-1/2 -translate-y-1/2 h-6 w-6 p-0"
-                                @click="confirmShowPassword = !confirmShowPassword">
-                                <Eye v-if="!confirmShowPassword" class="h-4 w-4" />
-                                <EyeOff v-else class="h-4 w-4" />
-                            </Button>
-                        </div>
+                        <Input
+                            id="password_confirmation"
+                            v-model="form.password_confirmation"
+                            type="password"
+                            class="mt-1 block w-full"
+                            autocomplete="new-password"
+                            placeholder="Confirm password"
+                        />
                         <InputError :message="form.errors.password_confirmation" />
                     </div>
 
@@ -142,4 +117,3 @@ const updatePassword = () => {
         </SettingsLayout>
     </AppLayout>
 </template>
-
