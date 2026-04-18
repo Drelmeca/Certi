@@ -1,7 +1,30 @@
-    <script setup lang="ts">
+<script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { type BreadcrumbItem } from '@/types';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import axios from 'axios';
+import { LoaderCircle, Plus } from 'lucide-vue-next';
+import InputError from '@/components/InputError.vue';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  status: number;
+  role: number;
+}
+
+interface FormData {
+  id: number | null;
+  name: string;
+  email: string;
+  status: string;
+}
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,72 +37,162 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-defineProps({ users: Array });
+defineProps<{ users: User[] }> ();
 
-const onEdit = (id) => {
-    // Redirect to the edit page for the selected person
-    //inertia visit(`/sample-crud/${id}/edit`);
-    // or use window.location.href  
-    router.visit(`/users/edit/${id}`);
+const isOpen = ref(false);
+const isLoading = ref(false);
+const editId = ref<number | null>(null);
+const formData = ref<FormData>({
+    id: null,
+    name: '',
+    email: '',
+    status: '1',
+});
+
+const errors = ref<Record<string, string>>({});
+
+const resetForm = () => {
+    formData.value = { id: null, name: '', email: '', status: '1' };
+    errors.value = {};
 };
 
+const openCreate = () => {
+    resetForm();
+    editId.value = null;
+    isOpen.value = true;
+};
+
+const openEdit = async (id: number) => {
+    editId.value = id;
+    isLoading.value = true;
+    try {
+        const response = await axios.get(`/users/${id}`);
+        formData.value.id = response.data.id;
+        formData.value.name = response.data.name;
+        formData.value.email = response.data.email;
+        formData.value.status = response.data.status.toString();
+    } catch (error) {
+        console.error('Error loading user:', error);
+        alert('Error loading user data');
+    } finally {
+        isLoading.value = false;
+        isOpen.value = true;
+    }
+};
+
+const submit = async () => {
+    isLoading.value = true;
+    errors.value = {};
+    try {
+        const endpoint = formData.value.id ? `/users/${formData.value.id}` : '/users/store';
+        const response = await axios.post(endpoint, formData.value);
+        alert(response.data.message || 'Success!');
+        window.location.reload();
+    } catch (error: any) {
+        if (error.response?.data?.errors) {
+            errors.value = error.response.data.errors;
+        } else {
+            alert('Error occurred.');
+        }
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+const deleteUser = (id: number) => {
+    if (confirm('Are you sure you want to delete this user?')) {
+        axios.delete(`/users/${id}`).then(() => {
+            window.location.reload();
+        }).catch(() => alert('Delete failed'));
+    }
+};
 </script>
 
 <template>
-
     <Head title="Users" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold">User's</h1>
-         <Link href="/users/create" class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-            Create
-            </Link>
-        </div> 
-        
-            <hr class="my-4" />
-            <!-- create a table list of user make it compact -->
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="overflow-hidden rounded-lg border bg-card shadow-md dark:border-slate-700 dark:bg-slate-800">
-                <table class="w-full table-auto text-left text-sm text-gray-500 dark:text-gray-400">
-                    <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Email</th>
-                            <th scope="col" class="px-6 py-3">Status</th>
-                            <th scope="col" class="px-6 py-3">Role</th>
-                            <th scope="col" class="px-6 py-3">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Add user rows here -->
-                        <tr v-for="user in users" :key="users.id"
-                            class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
-                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ user.name }}</td>
-                            <td class="px-6 py-4">{{ user.email }}</td>
-                            <td class="px-6 py-4">
-                                <span v-if="user.status === 1" class="text-green-600">Active</span>
-                                <span v-else class="text-red-600">Inactive</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button
-                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400" @click="onEdit(user.id)">{{ user.role }}</button>
-                                <span v-if="user.role === 2" class="text-blue-600">Admin-user</span>
-                                <span v-else-if="user.role === 1" class="text-yellow-600">Guest</span>
-                                <span v-else class="text-gray-600">Guest</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <button
-                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400" @click="onEdit(user.id)">Edit</button>
-                                &nbsp;|&nbsp;
-                                <button
-                                    class="text-red-600 hover:text-red-900 dark:text-red-500 dark:hover:text-red-400">Delete</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold tracking-tight">Users</h1>
+            <Dialog v-model="isOpen">
+                <DialogTrigger as-child>
+                    <Button>
+                        <Plus class="mr-2 h-4 w-4" />
+                        Create User
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{{ editId ? 'Edit User' : 'Create User' }}</DialogTitle>
+                        <DialogDescription>
+                            {{ editId ? 'Update the user details below.' : 'Add a new user account.' }}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <form @submit.prevent="submit" class="space-y-4">
+                        <div class="space-y-2">
+                            <Label for="name">Name</Label>
+                            <Input id="name" v-model="formData.name" placeholder="John Doe" />
+                            <div v-if="errors.name" class="text-destructive text-sm">{{ errors.name[0] }}</div>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="email">Email</Label>
+                            <Input id="email" type="email" v-model="formData.email" placeholder="john@example.com" />
+                            <div v-if="errors.email" class="text-destructive text-sm">{{ errors.email[0] }}</div>
+                        </div>
+                        <div class="space-y-2">
+                            <Label for="status">Status</Label>
+                            <Button variant="outline" class="w-full justify-start" :class="{ 'bg-green-500 text-white': formData.status === '1' }" type="button" @click="formData.status = '1'">
+                                Active
+                            </Button>
+                            <Button variant="outline" class="w-full justify-start" :class="{ 'bg-red-500 text-white': formData.status === '0' }" type="button" @click="formData.status = '0'">
+                                Inactive
+                            </Button>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose as-child>
+                                <Button type="button" variant="outline">Cancel</Button>
+                            </DialogClose>
+                            <Button type="submit" :disabled="isLoading">
+                                <LoaderCircle v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
+                                {{ editId ? 'Update User' : 'Create User' }}
+                            </Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
 
+        <div class="overflow-hidden rounded-lg border bg-card shadow-md">
+            <table class="w-full table-auto">
+                <thead class="bg-muted/50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Role</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="user in users" :key="user.id" class="border-b hover:bg-muted/50">
+                        <td class="px-6 py-4 font-medium">{{ user.name }}</td>
+                        <td class="px-6 py-4 text-muted-foreground">{{ user.email }}</td>
+                        <td class="px-6 py-4">
+                            <span v-if="user.status === 1" class="px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">Active</span>
+                            <span v-else class="px-3 py-1 text-xs font-medium bg-red-100 text-red-800 rounded-full">Inactive</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span v-if="user.role === 2" class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">Admin</span>
+                            <span v-else class="px-3 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded-full">User</span>
+                        </td>
+                        <td class="px-6 py-4 space-x-2">
+                            <Button variant="outline" size="sm" @click="openEdit(user.id)">Edit</Button>
+                            <Button variant="destructive" size="sm" @click="deleteUser(user.id)">Delete</Button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </AppLayout>
 </template>
+

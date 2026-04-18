@@ -7,17 +7,46 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { onMounted, ref } from 'vue';
+
+const props = defineProps<{
+    captcha_question?: string;
+}>();
 
 const form = useForm({
     name: '',
     email: '',
     password: '',
     password_confirmation: '',
+    captcha_answer: '',
+});
+
+const question = ref(props.captcha_question || 'Loading...');
+
+const num1 = ref(0);
+const num2 = ref(0);
+const operator = ref('+');
+const question = ref('');
+
+const generateCaptcha = () => {
+    const ops = ['+', '-', '*'];
+    operator.value = ops[Math.floor(Math.random() * ops.length)];
+    num1.value = Math.floor(Math.random() * 20) + 1;
+    num2.value = Math.floor(Math.random() * 20) + 1;
+    let correct;
+    if (operator.value === '+') correct = num1.value + num2.value;
+    else if (operator.value === '-') correct = num1.value - num2.value;
+    else correct = num1.value * num2.value;
+    question.value = `${num1.value} ${operator.value} ${num2.value}`;
+};
+
+onMounted(() => {
+    generateCaptcha();
 });
 
 const submit = () => {
     form.post(route('register'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
+        onFinish: () => form.reset('password', 'password_confirmation', 'captcha_answer'),
     });
 };
 </script>
@@ -68,7 +97,14 @@ const submit = () => {
                     <InputError :message="form.errors.password_confirmation" />
                 </div>
 
-                <Button type="submit" class="mt-2 w-full" tabindex="5" :disabled="form.processing">
+                <div class="grid gap-2">
+                    <Label for="captcha_answer">Solve: {{ question }}</Label>
+                    <Input id="captcha_answer" type="number" required v-model="form.captcha_answer" placeholder="Answer" />
+                    <InputError :message="form.errors.captcha_answer" />
+                    <Button type="button" size="sm" @click="generateCaptcha" class="mt-1">New Problem</Button>
+                </div>
+
+                <Button type="submit" class="mt-2 w-full" tabindex="6" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Create account
                 </Button>
