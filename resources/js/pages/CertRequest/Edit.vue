@@ -104,7 +104,7 @@ const handleFileUpload = (event: Event) => {
         <form @submit.prevent="createCertRequest" v-if="!CertRequest.success">
             <div class="min-h-screen bg-dark p-8">
                 <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-8">
-    <h2 class="text-2xl font-semibold text-gray-800 b-2">{{ props.mode === 'edit' ? 'Edit Request' : 'Request Form' }}</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800  b-2">Request Form</h2>
                     <p class="text-gray-500 mb-6">Enter your details below for your request certificate. </p>
                     <p class="text-blue-500 mb-8">Claims this within 3day's.</p>
 
@@ -179,9 +179,6 @@ const handleFileUpload = (event: Event) => {
                                     :class="isValidateInformation ? 'bg-blue-600 text-white' : 'bg-gray-400 text-gray-200'"
                                     class="text-white px-6 py-2 rounded-md shadow-md transition">
                                     Submit
-                                </button>
-                                <button type="button" @click="router.visit('/CertRequest')" class="bg-gray-500 text-white px-6 py-2 rounded-md shadow-md transition ml-2">
-                                    Back to List
                                 </button>
                             </div>
                         </div>

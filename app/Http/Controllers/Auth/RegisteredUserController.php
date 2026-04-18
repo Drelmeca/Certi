@@ -9,7 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Rules\StrongPassword;
+use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -18,27 +18,9 @@ class RegisteredUserController extends Controller
     /**
      * Show the registration page.
      */
-    public function create(Request $request): Response
+    public function create(): Response
     {
-        // Generate math CAPTCHA
-        $ops = ['+', '-', '*'];
-        $op = $ops[array_rand($ops)];
-        $n1 = random_int(1, 20);
-        $n2 = random_int(1, 20);
-        $correct = match($op) {
-            '+' => $n1 + $n2,
-            '-' => $n1 - $n2,
-            '*' => $n1 * $n2,
-        };
-        $question = "$n1 $op $n2";
-        $request->session()->put([
-            'captcha_answer' => $correct,
-            'captcha_question' => $question,
-        ]);
-
-        return Inertia::render('auth/Register', [
-            'captcha_question' => $question,
-        ]);
+        return Inertia::render('auth/Register');
     }
 
     /**
@@ -51,8 +33,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', new StrongPassword()],
-            'captcha_answer' => ['required', 'numeric', new \App\Rules\MathCaptcha()],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
         $user = User::create([
@@ -64,8 +45,6 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
-        $request->session()->forget('captcha_answer');
 
         return to_route('dashboard');
     }

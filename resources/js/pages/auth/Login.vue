@@ -8,25 +8,17 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
-import { onMounted, ref } from 'vue';
 
-const props = defineProps<{
+defineProps<{
     status?: string;
     canResetPassword: boolean;
-
 }>();
 
 const form = useForm({
     email: '',
     password: '',
     remember: false,
-
 });
-
-
-
-
-
 
 const submit = () => {
     form.post(route('login'), {
@@ -66,16 +58,14 @@ const submit = () => {
                     <InputError :message="form.errors.password" />
                 </div>
 
-<div class="flex items-center justify-between" :tabindex="3">
+                <div class="flex items-center justify-between" :tabindex="3">
                     <Label for="remember" class="flex items-center space-x-3">
                         <Checkbox id="remember" v-model="form.remember" :tabindex="4" />
                         <span>Remember me</span>
                     </Label>
                 </div>
 
-
-
-                <Button type="submit" class="mt-4 w-full" :tabindex="5" :disabled="form.processing">
+                <Button type="submit" class="mt-4 w-full" :tabindex="4" :disabled="form.processing">
                     <LoaderCircle v-if="form.processing" class="h-4 w-4 animate-spin" />
                     Log in
                 </Button>
